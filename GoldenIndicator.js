@@ -19,7 +19,7 @@ MA3Period = input(150, title="MA3 Period")
 MA3Type = input(title="MA3 Type", defval="SMA", options=["RMA", "SMA", "EMA", "WMA", "HMA", "DEMA", "TEMA"])
 MA3Source = input(title="MA3 Source", type=input.source, defval=close)
 MA3Visible = input(title="MA3 Visible", type=input.bool, defval=false) // Will automatically hide crossovers containing this MA
-ShowCrosses = input(title="Show Crosses", type=input.bool, defval=true)
+ShowCrosses = input(title="Show Labels", type=input.bool, defval=true)
 
 // MA# is a variable used to store the actual moving average value.
 // if statements - https://www.tradingview.com/pine-script-reference/#op_if
@@ -93,42 +93,45 @@ else
                         if MA3Type == "TEMA"
                             e = ema(MA3Source, MA3Period)
                             3 * (e - ema(e, MA3Period)) + ema(ema(e, MA3Period), MA3Period)
-                    
+
+transparency = 95
+breakLines= "\n\n\n\n\n"
+
 // Plotting crossover/unders for all combinations of crosses
 // https://www.tradingview.com/pine-script-reference/v4/#fun_label%7Bdot%7Dnew
 if ShowCrosses and MA1Visible and MA2Visible and crossunder(MA1, MA2)
-    lun1 = label.new(bar_index, na, "Short", 
-      color=color.red, 
+    lun1 = label.new(bar_index, na, "Short"+breakLines, 
+      color=color.new(color.red, transparency), 
       textcolor=color.white,
       style=label.style_labeldown, size=size.tiny)
     label.set_y(lun1, MA1)
 if ShowCrosses and MA1Visible and MA2Visible and crossover(MA1, MA2)
-    lup1 = label.new(bar_index, na,  "Long",
-      color=color.green, 
+    lup1 = label.new(bar_index, na,  breakLines+"Long",
+      color=color.new(color.green, transparency), 
       textcolor=color.white,
       style=label.style_labelup, size=size.tiny)
     label.set_y(lup1, MA1)
 if ShowCrosses and MA1Visible and MA3Visible and crossunder(MA1, MA3)
-    lun2 = label.new(bar_index, na,  "Short",
-      color=color.red, 
+    lun2 = label.new(bar_index, na,  "Short"+breakLines,
+      color=color.new(color.red, transparency), 
       textcolor=color.white,
       style=label.style_labeldown, size=size.tiny)
     label.set_y(lun2, MA1)
 if ShowCrosses and MA1Visible and MA3Visible and crossover(MA1, MA3)
-    lup2 = label.new(bar_index, na,  "Long",
-      color=color.green, 
+    lup2 = label.new(bar_index, na,   breakLines+"Long",
+      color=color.new(color.green, transparency), 
       textcolor=color.white,
       style=label.style_labelup, size=size.tiny)
     label.set_y(lup2, MA1)
 if ShowCrosses and MA2Visible and MA3Visible and crossunder(MA2, MA3)
-    lun3 = label.new(bar_index, na,  "Short",
-      color=color.red, 
+    lun3 = label.new(bar_index, na,  "Short"+breakLines,
+      color=color.new(color.red, transparency), 
       textcolor=color.white,
       style=label.style_labeldown, size=size.tiny)
     label.set_y(lun3, MA2)
 if ShowCrosses and MA2Visible and MA3Visible and crossover(MA2, MA3)
-    lup3 = label.new(bar_index, na,  "Long",
-      color=color.green, 
+    lup3 = label.new(bar_index, na,   breakLines+"Long",
+      color=color.new(color.green, transparency), 
       textcolor=color.white,
       style=label.style_labelup, size=size.tiny)
     label.set_y(lup3, MA2) 
