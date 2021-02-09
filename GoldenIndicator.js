@@ -1,25 +1,24 @@
 //@version=4
-
-
 study(shorttitle = "Golden Indicator", title="Tiple Moving Averages",overlay=true)
 
+ShowCrosses = input(title="AI HELP EXPERIMENTAL*", type=input.bool, defval=true)
+isForexPair = input(title="Forex Pair", type=input.bool, defval=false)
+
 // MA#Period is a variable used to store the indicator lookback period.  In this case, from the input.
-// input - https://www.tradingview.com/pine-script-docs/en/v4/annotations/Script_inputs.html
-MA1Period = input(6, title="MA1 Period")
+MA1Period = input(20, title="MA1 Period")
 MA1Type = input(title="MA1 Type", defval="SMA", options=["RMA", "SMA", "EMA", "WMA", "HMA", "DEMA", "TEMA"])
 MA1Source = input(title="MA1 Source", type=input.source, defval=close)
-MA1Visible = input(title="MA1 Visible", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
+MA1Visible = input(title="------------ MA1 Visible ------------", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
 
-MA2Period = input(14, title="MA2 Period")
+MA2Period = input(50, title="MA2 Period")
 MA2Type = input(title="MA2 Type", defval="SMA", options=["RMA", "SMA", "EMA", "WMA", "HMA", "DEMA", "TEMA"])
 MA2Source = input(title="MA2 Source", type=input.source, defval=close)
-MA2Visible = input(title="MA2 Visible", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
+MA2Visible = input(title="------------ MA2 Visible ------------", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
 
 MA3Period = input(150, title="MA3 Period")
 MA3Type = input(title="MA3 Type", defval="SMA", options=["RMA", "SMA", "EMA", "WMA", "HMA", "DEMA", "TEMA"])
 MA3Source = input(title="MA3 Source", type=input.source, defval=close)
-MA3Visible = input(title="MA3 Visible", type=input.bool, defval=false) // Will automatically hide crossovers containing this MA
-ShowCrosses = input(title="Show Labels", type=input.bool, defval=true)
+MA3Visible = input(title="------------ MA3 Visible ------------", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
 
 
 getMA(type,source,period) =>
@@ -46,59 +45,39 @@ getMA(type,source,period) =>
                                 e = ema(source, period)
                                 3 * (e - ema(e, period)) + ema(ema(e, period), period)
 
-MA1 = getMA(MA1Type,MA1Source,MA1Period)
+MA1 = getMA(MA1Type,MA1Source,MA1Period)  
 MA2 = getMA(MA2Type,MA2Source,MA2Period)
 MA3 = getMA(MA3Type,MA3Source,MA3Period)
 
 
-transparency = 100
-breakLines= "\n\n"
-
-// truncate() truncates a given number
-// to a certain number of decimals
+// truncate() truncates a given number to a certain number of decimals
 truncate(number, decimals) =>
     factor = pow(10, decimals)
     int(number * factor) / factor
+    
+    
+long  = MA1 > MA2
+short = MA1 < MA2
+
+longCondition = not long[15]
+shortCondition = not short[15]
+
+// closeLong = MA1 < MA2 and not long[11]
+// closeShort = MA1 > MA2 and not short[11]
+
 
 // Plotting crossover/unders for all combinations of crosses
-// https://www.tradingview.com/pine-script-reference/v4/#fun_label%7Bdot%7Dnew
-if ShowCrosses and MA1Visible and MA2Visible and crossunder(MA1, MA2) and rsi(close,14) > 50
-    lun1 = label.new(bar_index, na, "Go Short\n"+tostring(truncate(MA1,2))+breakLines, 
-      color=color.new(color.red, transparency), 
-      textcolor=color.red,
-      style=label.style_labeldown, size=size.normal)
-    label.set_y(lun1, MA1)
-if ShowCrosses and MA1Visible and MA2Visible and crossover(MA1, MA2) and rsi(close,14) < 60
-    lup1 = label.new(bar_index, bar_index*2,  breakLines+"Go Long\n"+tostring(truncate(MA1,2)),
-      color=color.new(color.green, transparency), 
-      textcolor=color.green,
-      style=label.style_labelup, size=size.normal)
-    label.set_y(lup1, MA1)
-if ShowCrosses and MA1Visible and MA3Visible and crossunder(MA1, MA3)
-    lun2 = label.new(bar_index, na,  "Short"+breakLines,
-      color=color.new(color.red, transparency), 
-      textcolor=color.white,
-      style=label.style_labeldown, size=size.tiny)
-    label.set_y(lun2, MA1)
-if ShowCrosses and MA1Visible and MA3Visible and crossover(MA1, MA3)
-    lup2 = label.new(bar_index, na,   breakLines+"Long",
-      color=color.new(color.green, transparency), 
-      textcolor=color.white,
-      style=label.style_labelup, size=size.tiny)
-    label.set_y(lup2, MA1)
-if ShowCrosses and MA2Visible and MA3Visible and crossunder(MA2, MA3)
-    lun3 = label.new(bar_index, na,  "Short"+breakLines,
-      color=color.new(color.red, transparency), 
-      textcolor=color.white,
-      style=label.style_labeldown, size=size.tiny)
-    label.set_y(lun3, MA2)
-if ShowCrosses and MA2Visible and MA3Visible and crossover(MA2, MA3)
-    lup3 = label.new(bar_index, na,   breakLines+"Long",
-      color=color.new(color.green, transparency), 
-      textcolor=color.white,
-      style=label.style_labelup, size=size.tiny)
-    label.set_y(lup3, MA2) 
+transparency = 0
+longVOffset = isForexPair? 0 : 30
+shortVOffset = isForexPair? 0 : 15
+breakLines= ""
+if(ShowCrosses)
+    if rsi(close,14) >= 60 //and MA1 - MA2 < 6  and shortCondition
+        lun1 = label.new(bar_index,high + shortVOffset, ""+tostring(truncate(MA1,2))+breakLines,color=color.new(color.red, transparency), textcolor=color.red, size=size.normal , style=label.style_arrowdown)
+    if rsi(close,14) < 32 //and MA2 - MA1 < 10 and longCondition
+        lup1 = label.new(bar_index, low - longVOffset,  breakLines+""+tostring(truncate(MA1,2)),color=color.new(color.green, transparency), textcolor=color.green, size=size.normal , style=label.style_arrowup)
 
-plot(MA1,color = color.green , linewidth = 2)
-plot(MA2,color = color.red , linewidth = 2)
-plot(MA3,color = color.blue , linewidth = 2)
+
+plot(MA1Visible ? MA1 : na,color = color.green , linewidth = 2)
+plot(MA2Visible ? MA2 : na,color = color.red , linewidth = 2)
+plot(MA3Visible ? MA3 : na,color = color.blue , linewidth = 2)
