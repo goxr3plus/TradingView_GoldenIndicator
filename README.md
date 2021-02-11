@@ -2,10 +2,11 @@
 Golden Indicator Strategy [TradingView](https://www.tradingview.com)
 
 Completely Configurable:
+
 ![opera_2021-02-11_17-44-30](https://user-images.githubusercontent.com/20374208/107660627-24e55880-6c91-11eb-96fd-d8f63a170a99.png)
 
 
-You can have :
+## Included
 
 I.   3 Moving Averages
 ![opera_2021-02-11_17-42-08](https://user-images.githubusercontent.com/20374208/107660041-7fca8000-6c90-11eb-9d30-026068b8a114.png)
