@@ -1,4 +1,4 @@
-# GoldenIndicator
+# GoldenIndicator (BETA Version)
 Golden Indicator Strategy TradingView
 
 Completely Configurable:
