@@ -88,7 +88,12 @@ if(AIHelp)
         
 // --------------------------  FORECASTING ------------------------------------------
 ShowForecasts = input(title="------------ Show Forecasts ------------", type=input.bool, defval=true)
+
+RsiInfuenceBias = input(title="Calculate Bias based on RSI", type=input.bool, defval=true)
 ForecastBias = input(title="Forecast Bias", defval="Neutral", options=["Neutral", "Bullish", "Bearish"])
+if RsiInfuenceBias == true
+    ForecastBias = "Neutral"
+
 ForecastBiasPeriod = input(14, title="Forecast Bias Period")
 ForecastBiasMagnitude = input(1, title="Forecast Bias Magnitude", minval=0.25, maxval=20, step=0.25)
 
