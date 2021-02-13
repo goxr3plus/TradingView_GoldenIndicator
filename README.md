@@ -3,8 +3,7 @@ Golden Indicator Strategy [TradingView](https://www.tradingview.com)
 
 Completely Configurable:
 
-![opera_2021-02-11_17-44-30](https://user-images.githubusercontent.com/20374208/107660627-24e55880-6c91-11eb-96fd-d8f63a170a99.png)
-
+![image](https://user-images.githubusercontent.com/20374208/107859434-0e323380-6e42-11eb-9c50-daa25bf66019.png)
 
 ## Included
 
