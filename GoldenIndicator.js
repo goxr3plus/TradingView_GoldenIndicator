@@ -107,11 +107,14 @@ bias(Bias, BiasPeriod) =>
                 ((atr(BiasPeriod)  * ForecastBiasMagnitude) * -1) // multiplying by -1 to make it a negative, bearish bias
                 
 Bias = bias(ForecastBias, ForecastBiasPeriod) // 14 is default atr period
-MA1Forecast1 = (getMA(MA1Type, MA1Source, MA1Period - 1) * (MA1Period - 1) + ((MA1Source * 1) + (Bias * 1))) / MA1Period
-MA1Forecast2 = (getMA(MA1Type, MA1Source, MA1Period - 2) * (MA1Period - 2) + ((MA1Source * 2) + (Bias * 2))) / MA1Period
-MA1Forecast3 = (getMA(MA1Type, MA1Source, MA1Period - 3) * (MA1Period - 3) + ((MA1Source * 3) + (Bias * 3))) / MA1Period
-MA1Forecast4 = (getMA(MA1Type, MA1Source, MA1Period - 4) * (MA1Period - 4) + ((MA1Source * 4) + (Bias * 4))) / MA1Period
-MA1Forecast5 = (getMA(MA1Type, MA1Source, MA1Period - 5) * (MA1Period - 5) + ((MA1Source * 5) + (Bias * 5))) / MA1Period
+
+getForecast(type,source,period,number) => (getMA(type, source, period - number) * (period - number) + ((source * number) + (Bias * number))) / period
+
+MA1Forecast1 = getForecast(MA1Type, MA1Source, MA1Period, 1)
+MA1Forecast2 = getForecast(MA1Type, MA1Source, MA1Period, 2)
+MA1Forecast3 = getForecast(MA1Type, MA1Source, MA1Period, 3)
+MA1Forecast4 = getForecast(MA1Type, MA1Source, MA1Period, 4)
+MA1Forecast5 = getForecast(MA1Type, MA1Source, MA1Period, 5)
 
 plot(MA1Forecast1, color=color.green, linewidth=1, style=plot.style_circles, title="EMA1 Forecast 1", offset=1, show_last=1)
 plot(ShowForecasts and MA1Visible ? MA1Forecast2 : na, color=color.green, linewidth=1, style=plot.style_circles, title="EMA1 Forecast 2", offset=2, show_last=1)
@@ -119,12 +122,11 @@ plot(ShowForecasts and MA1Visible ? MA1Forecast3 : na, color=color.green, linewi
 plot(ShowForecasts and MA1Visible ? MA1Forecast4 : na, color=color.green, linewidth=1, style=plot.style_circles, title="EMA1 Forecast 4", offset=4, show_last=1)
 plot(ShowForecasts and MA1Visible ? MA1Forecast5 : na, color=color.green, linewidth=1, style=plot.style_circles, title="EMA1 Forecast 5", offset=5, show_last=1)
 
-
-MA2Forecast1 = (getMA(MA2Type, MA2Source, MA2Period - 1) * (MA2Period - 1) + ((MA1Source * 1) + (Bias * 1))) / MA2Period
-MA2Forecast2 = (getMA(MA2Type, MA2Source, MA2Period - 2) * (MA2Period - 2) + ((MA1Source * 2) + (Bias * 2))) / MA2Period
-MA2Forecast3 = (getMA(MA2Type, MA2Source, MA2Period - 3) * (MA2Period - 3) + ((MA1Source * 3) + (Bias * 3))) / MA2Period
-MA2Forecast4 = (getMA(MA2Type, MA2Source, MA2Period - 4) * (MA2Period - 4) + ((MA1Source * 4) + (Bias * 4))) / MA2Period
-MA2Forecast5 = (getMA(MA2Type, MA2Source, MA2Period - 5) * (MA2Period - 5) + ((MA1Source * 5) + (Bias * 5))) / MA2Period
+MA2Forecast1 = getForecast(MA2Type, MA2Source, MA2Period, 1)
+MA2Forecast2 = getForecast(MA2Type, MA2Source, MA2Period, 2)
+MA2Forecast3 = getForecast(MA2Type, MA2Source, MA2Period, 3)
+MA2Forecast4 = getForecast(MA2Type, MA2Source, MA2Period, 4)
+MA2Forecast5 = getForecast(MA2Type, MA2Source, MA2Period, 5)
 
 plot(ShowForecasts and MA2Visible ? MA2Forecast1 : na, color=color.red, linewidth=1, style=plot.style_circles, title="EMA2 Forecast 1", offset=1, show_last=1)
 plot(ShowForecasts and MA2Visible ? MA2Forecast2 : na, color=color.red, linewidth=1, style=plot.style_circles, title="EMA2 Forecast 2", offset=2, show_last=1)
@@ -132,12 +134,11 @@ plot(ShowForecasts and MA2Visible ? MA2Forecast3 : na, color=color.red, linewidt
 plot(ShowForecasts and MA2Visible ? MA2Forecast4 : na, color=color.red, linewidth=1, style=plot.style_circles, title="EMA2 Forecast 4", offset=4, show_last=1)
 plot(ShowForecasts and MA2Visible ? MA2Forecast5 : na, color=color.red, linewidth=1, style=plot.style_circles, title="EMA2 Forecast 5", offset=5, show_last=1)
 
-
-MA3Forecast1 = (getMA(MA3Type, MA3Source, MA3Period - 1) * (MA3Period - 1) + ((MA1Source * 1) + (Bias * 1))) / MA3Period
-MA3Forecast2 = (getMA(MA3Type, MA3Source, MA3Period - 2) * (MA3Period - 2) + ((MA1Source * 2) + (Bias * 2))) / MA3Period
-MA3Forecast3 = (getMA(MA3Type, MA3Source, MA3Period - 3) * (MA3Period - 3) + ((MA1Source * 3) + (Bias * 3))) / MA3Period
-MA3Forecast4 = (getMA(MA3Type, MA3Source, MA3Period - 4) * (MA3Period - 4) + ((MA1Source * 4) + (Bias * 4))) / MA3Period
-MA3Forecast5 = (getMA(MA3Type, MA3Source, MA3Period - 5) * (MA3Period - 5) + ((MA1Source * 5) + (Bias * 5))) / MA3Period
+MA3Forecast1 = getForecast(MA3Type, MA3Source, MA3Period, 1)
+MA3Forecast2 = getForecast(MA3Type, MA3Source, MA3Period, 2)
+MA3Forecast3 = getForecast(MA3Type, MA3Source, MA3Period, 3)
+MA3Forecast4 = getForecast(MA3Type, MA3Source, MA3Period, 4)
+MA3Forecast5 = getForecast(MA3Type, MA3Source, MA3Period, 5)
 
 plot(ShowForecasts and MA3Visible ? MA3Forecast1 : na, color=color.blue, linewidth=1, style=plot.style_circles, title="EMA3 Forecast 1", offset=1, show_last=1)
 plot(ShowForecasts and MA3Visible ? MA3Forecast2 : na, color=color.blue, linewidth=1, style=plot.style_circles, title="EMA3 Forecast 2", offset=2, show_last=1)
