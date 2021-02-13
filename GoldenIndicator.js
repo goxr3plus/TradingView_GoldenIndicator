@@ -8,27 +8,27 @@ truncate(number, decimals) =>
     int(number * factor) / factor
     
 getMA(type,source,period) =>
-    if type == "Simple MA"
+    if type == "SMA - Simple Moving Average"
         sma(source, period)
     else
-        if type == "Hull MA"
+        if type == "HMA - Hull Moving Average"
             wma(2*wma(source, period/2)-wma(source, period), round(sqrt(period))) 
         else
-            if type == "Double Exponential MA"
+            if type == "DMA - Double Exponential Moving Average"
                 e = ema(source, period)
                 2 * e - ema(e, period)
             else
-                if type == "Triple Exponential MA"
+                if type == "TMA - Triple Exponential Moving Average"
                     e = ema(source, period)
                     3 * (e - ema(e, period)) + ema(ema(e, period), period)
                 else
-                    if type == "Weighted MA"
+                    if type == "WMA - Weighted Moving Average"
                         wma(source, period)
                     else
-                        if type == "Rolling MA"
+                        if type == "RMA - Rolling Moving Average"
                             rma(source, period)
                         else
-                            if type == "Exponential MA"
+                            if type == "EMA - Exponential Moving Average"
                                 ema(source, period)
     
 
@@ -37,19 +37,19 @@ getMA(type,source,period) =>
 AIHelp = input(title="AI HELP EXPERIMENTAL*", type=input.bool, defval=false)
 isForexPair = input(title="Forex Pair", type=input.bool, defval=false)
 
-MA1Visible = input(title="------------ MA1 Visible ------------", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
+MA1Visible = input(title="------------ MA1 Visible ------------", type=input.bool, defval=true)
 MA1Period = input(20, title="MA1 Period")
-MA1Type = input(title="MA1 Type", defval="Exponential MA", options=["Rolling MA", "Simple MA", "Exponential MA", "Weighted MA", "Hull MA", "Double Exponential MA", "Triple Exponential MA"])
+MA1Type = input(title="MA1 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA1Source = input(title="MA1 Source", type=input.source, defval=close)
 
-MA2Visible = input(title="------------ MA2 Visible ------------", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
+MA2Visible = input(title="------------ MA2 Visible ------------", type=input.bool, defval=true)
 MA2Period = input(50, title="MA2 Period")
-MA2Type = input(title="MA2 Type", defval="Exponential MA", options=["Rolling MA", "Simple MA", "Exponential MA", "Weighted MA", "Hull MA", "Double Exponential MA", "Triple Exponential MA"])
+MA2Type = input(title="MA2 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA2Source = input(title="MA2 Source", type=input.source, defval=close)
 
-MA3Visible = input(title="------------ MA3 Visible ------------", type=input.bool, defval=true) // Will automatically hide crossovers containing this MA
+MA3Visible = input(title="------------ MA3 Visible ------------", type=input.bool, defval=true)
 MA3Period = input(150, title="MA3 Period")
-MA3Type = input(title="MA3 Type", defval="Exponential MA", options=["Rolling MA", "Simple MA", "Exponential MA", "Weighted MA", "Hull MA", "Double Exponential MA", "Triple Exponential MA"])
+MA3Type = input(title="MA3 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA3Source = input(title="MA3 Source", type=input.source, defval=close)
 
 MA1 = getMA(MA1Type,MA1Source,MA1Period)  
