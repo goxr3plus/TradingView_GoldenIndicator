@@ -77,30 +77,32 @@ ma(type,source,period) =>
 
 //-------------------- INPUTS -----------------------------------------------
 
-AIHelp = input(title="AI HELP EXPERIMENTAL*", type=input.bool, defval=true) 
+// AIHelp = input(title="AI HELP EXPERIMENTAL*", type=input.bool, defval=true) 
+AIHelp = false
+ShowRibbons = input(title="Show Ribbons", type=input.bool, defval=true)
 
 
 MA1Visible = input(title="------------ Moving Average 1 Visible ------------", type=input.bool, defval=true)
-MA1Period = input(20, title="Moving Average 1 Period")
+MA1Period = input(6, title="Moving Average 1 Period")
 MA1Type = input(title="Moving Average 1 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA1Source = input(title="Moving Average 1 Source", type=input.source, defval=close)
 MA1TimeFrame = input(title="Moving Average 1 Timeframe", defval="Current", options=["Current", "1m", "3m", "5m", "15m", "30m", "45m", "1h", "2h", "3h", "4h", "1D", "1W", "1M"])
 
 MA2Visible = input(title="------------ Moving Average 2 Visible ------------", type=input.bool, defval=true)
-MA2Period = input(50, title="Moving Average 2 Period")
+MA2Period = input(21, title="Moving Average 2 Period")
 MA2Type = input(title="Moving Average 2 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA2Source = input(title="Moving Average 2 Source", type=input.source, defval=close)
 MA2TimeFrame = input(title="Moving Average 2 Timefram", defval="Current", options=["Current", "1m", "3m", "5m", "15m", "30m", "45m", "1h", "2h", "3h", "4h", "1D", "1W", "1M"])
 
 
 MA3Visible = input(title="------------ Moving Average 3 Visible ------------", type=input.bool, defval=true)
-MA3Period = input(150, title="Moving Average 3 Period")
+MA3Period = input(50, title="Moving Average 3 Period")
 MA3Type = input(title="Moving Average 3 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA3Source = input(title="Moving Average 3 Source", type=input.source, defval=close)
 MA3TimeFrame = input(title="Moving Average 3 Timeframe", defval="Current", options=["Current", "1m", "3m", "5m", "15m", "30m", "45m", "1h", "2h", "3h", "4h", "1D", "1W", "1M"])
 
 MA4Visible = input(title="------------ Moving Average 4 Visible ------------", type=input.bool, defval=true)
-MA4Period = input(200, title="Moving Average 4 Period")
+MA4Period = input(150, title="Moving Average 4 Period")
 MA4Type = input(title="Moving Average 4 Type", defval="EMA - Exponential Moving Average", options=["SMA - Simple Moving Average", "EMA - Exponential Moving Average","RMA - Rolling Moving Average",  "WMA - Weighted Moving Average", "HMA - Hull Moving Average", "DMA - Double Exponential Moving Average", "TMA - Triple Exponential Moving Average"])
 MA4Source = input(title="Moving Average 4 Source", type=input.source, defval=close)
 MA4TimeFrame = input(title="Moving Average 4 Timeframe", defval="Current", options=["Current", "1m", "3m", "5m", "15m", "30m", "45m", "1h", "2h", "3h", "4h", "1D", "1W", "1M"])
@@ -227,3 +229,55 @@ plot(MA4TimeFrame == "Current" and ShowForecasts and MA4Visible ? MA4Forecast1 :
 
 //  result = (ma(MA1Type, MA1Source, MA1Period - 1) * (MA1Period - 1) + ((MA1Source * 1) + (Bias * 1)))/20
 // label.new(bar_index, high + 15, tostring(5))
+
+// --------------------------  RIBBONS ------------------------------------------
+
+// Ribbon related code
+// For Ribbons to work - they must use the same MAType, MAResolution and MASource.  This is to ensure the ribbons are fair between one to the other.
+// Ribbons also will usually look better if MA1Period < MA2Period and MA2Period < MA3Period
+
+// custom functions in  pine - https://www.tradingview.com/wiki/Declaring_Functions
+// This function is used to calculate the period to be used on a ribbon based on existing MAs
+rperiod(P1, P2, Step, Ribbons) =>
+    ((abs(P1 - P2)) / (Ribbons + 1) * Step) + min(P1, P2)
+    // divide by +1 so that 5 lines can show.  Divide by 5 and one line shows up on another MA
+
+// MA1-MA2
+Ribbon1 = security(syminfo.tickerid, resolution(MA1TimeFrame), ma(MA1Type, MA1Source, rperiod(MA1Period, MA2Period, 1, 5)))
+Ribbon2 = security(syminfo.tickerid, resolution(MA1TimeFrame), ma(MA1Type, MA1Source, rperiod(MA1Period, MA2Period, 2, 5)))
+Ribbon3 = security(syminfo.tickerid, resolution(MA1TimeFrame), ma(MA1Type, MA1Source, rperiod(MA1Period, MA2Period, 3, 5)))
+Ribbon4 = security(syminfo.tickerid, resolution(MA1TimeFrame), ma(MA1Type, MA1Source, rperiod(MA1Period, MA2Period, 4, 5)))
+Ribbon5 = security(syminfo.tickerid, resolution(MA1TimeFrame), ma(MA1Type, MA1Source, rperiod(MA1Period, MA2Period, 5, 5)))
+
+plot(MA1Visible and MA2Visible and ShowRibbons and MA1Type == MA2Type and MA1TimeFrame == MA2TimeFrame and MA1Source == MA2Source ? Ribbon1 : na, color=color.green, linewidth=1, style=plot.style_line, title="Ribbon1", transp=90)
+plot(MA1Visible and MA2Visible and ShowRibbons and MA1Type == MA2Type and MA1TimeFrame == MA2TimeFrame and MA1Source == MA2Source ? Ribbon2 : na, color=color.green, linewidth=1, style=plot.style_line, title="Ribbon2", transp=85)
+plot(MA1Visible and MA2Visible and ShowRibbons and MA1Type == MA2Type and MA1TimeFrame == MA2TimeFrame and MA1Source == MA2Source ? Ribbon3 : na, color=color.green, linewidth=1, style=plot.style_line, title="Ribbon3", transp=80)
+plot(MA1Visible and MA2Visible and ShowRibbons and MA1Type == MA2Type and MA1TimeFrame == MA2TimeFrame and MA1Source == MA2Source ? Ribbon4 : na, color=color.red, linewidth=1, style=plot.style_line, title="Ribbon4", transp=75)
+plot(MA1Visible and MA2Visible and ShowRibbons and MA1Type == MA2Type and MA1TimeFrame == MA2TimeFrame and MA1Source == MA2Source ? Ribbon5 : na, color=color.red, linewidth=1, style=plot.style_line, title="Ribbon5", transp=70)
+
+// MA2-MA3
+Ribbon6 = security(syminfo.tickerid, resolution(MA2TimeFrame), ma(MA2Type, MA2Source, rperiod(MA2Period, MA3Period, 1, 5)))
+Ribbon7 = security(syminfo.tickerid, resolution(MA2TimeFrame), ma(MA2Type, MA2Source, rperiod(MA2Period, MA3Period, 2, 5)))
+Ribbon8 = security(syminfo.tickerid, resolution(MA2TimeFrame), ma(MA2Type, MA2Source, rperiod(MA2Period, MA3Period, 3, 5)))
+Ribbon9 = security(syminfo.tickerid, resolution(MA2TimeFrame), ma(MA2Type, MA2Source, rperiod(MA2Period, MA3Period, 4, 5)))
+Ribbon10 = security(syminfo.tickerid, resolution(MA2TimeFrame), ma(MA2Type, MA2Source, rperiod(MA2Period, MA3Period, 5, 5)))
+        
+plot(MA2Visible and MA3Visible and ShowRibbons and MA2Type == MA3Type and MA2TimeFrame == MA3TimeFrame and MA2Source == MA3Source ? Ribbon6 : na, color=color.red, linewidth=1, style=plot.style_line, title="Ribbon6", transp=70)
+plot(MA2Visible and MA3Visible and ShowRibbons and MA2Type == MA3Type and MA2TimeFrame == MA3TimeFrame and MA2Source == MA3Source ? Ribbon7 : na, color=color.red, linewidth=1, style=plot.style_line, title="Ribbon7", transp=75)
+plot(MA2Visible and MA3Visible and ShowRibbons and MA2Type == MA3Type and MA2TimeFrame == MA3TimeFrame and MA2Source == MA3Source ? Ribbon8 : na, color=color.blue, linewidth=1, style=plot.style_line, title="Ribbon8", transp=80)
+plot(MA2Visible and MA3Visible and ShowRibbons and MA2Type == MA3Type and MA2TimeFrame == MA3TimeFrame and MA2Source == MA3Source ? Ribbon9 : na, color=color.blue, linewidth=1, style=plot.style_line, title="Ribbon9", transp=85)
+plot(MA2Visible and MA3Visible and ShowRibbons and MA2Type == MA3Type and MA2TimeFrame == MA3TimeFrame and MA2Source == MA3Source ? Ribbon10 : na, color=color.blue, linewidth=1, style=plot.style_line, title="Ribbon10", transp=90)
+
+// MA3-MA4
+Ribbon11 = security(syminfo.tickerid, resolution(MA3TimeFrame), ma(MA3Type, MA3Source, rperiod(MA3Period, MA4Period, 1, 5)))
+Ribbon12 = security(syminfo.tickerid, resolution(MA3TimeFrame), ma(MA3Type, MA3Source, rperiod(MA3Period, MA4Period, 2, 5)))
+Ribbon13 = security(syminfo.tickerid, resolution(MA3TimeFrame), ma(MA3Type, MA3Source, rperiod(MA3Period, MA4Period, 3, 5)))
+Ribbon14 = security(syminfo.tickerid, resolution(MA3TimeFrame), ma(MA3Type, MA3Source, rperiod(MA3Period, MA4Period, 4, 5)))
+Ribbon15 = security(syminfo.tickerid, resolution(MA3TimeFrame), ma(MA3Type, MA3Source, rperiod(MA3Period, MA4Period, 5, 5)))
+        
+plot(MA3Visible and MA4Visible and ShowRibbons and MA3Type == MA4Type and MA3TimeFrame == MA4TimeFrame and MA3Source == MA4Source ? Ribbon11 : na, color=color.blue, linewidth=1, style=plot.style_line, title="Ribbon11", transp=70)
+plot(MA3Visible and MA4Visible and ShowRibbons and MA3Type == MA4Type and MA3TimeFrame == MA4TimeFrame and MA3Source == MA4Source ? Ribbon12 : na, color=color.blue, linewidth=1, style=plot.style_line, title="Ribbon12", transp=75)
+plot(MA3Visible and MA4Visible and ShowRibbons and MA3Type == MA4Type and MA3TimeFrame == MA4TimeFrame and MA3Source == MA4Source ? Ribbon13 : na, color=color.purple, linewidth=1, style=plot.style_line, title="Ribbon13", transp=80)
+plot(MA3Visible and MA4Visible and ShowRibbons and MA3Type == MA4Type and MA3TimeFrame == MA4TimeFrame and MA3Source == MA4Source ? Ribbon14 : na, color=color.purple, linewidth=1, style=plot.style_line, title="Ribbon14", transp=85)
+plot(MA3Visible and MA4Visible and ShowRibbons and MA3Type == MA4Type and MA3TimeFrame == MA4TimeFrame and MA3Source == MA4Source ? Ribbon15 : na, color=color.purple, linewidth=1, style=plot.style_line, title="Ribbon15", transp=90)
+
