@@ -13,6 +13,4 @@ II.  Smart algorithms for buy and sell
 
 Completely Configurable:
 
-![image](https://user-images.githubusercontent.com/20374208/109058506-bd48f780-76eb-11eb-91c9-0c7def66cb3b.png)
-
-
+![image](https://user-images.githubusercontent.com/20374208/111761298-6bd5f780-88a8-11eb-9aa1-e59b06445f85.png)
