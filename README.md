@@ -1,6 +1,8 @@
 # GoldenIndicator (BETA Version)
 Golden Indicator Strategy [TradingView](https://www.tradingview.com)
 
+![image](https://user-images.githubusercontent.com/20374208/134475324-f569e1df-7885-4062-af0a-3be8451e962f.png)
+
 ## Included
 
 I.   4 Moving Averages
